@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -32,7 +32,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
-import static owe6eindopdracht.VirusLogica.hosts;
 
 /**
  * @function maakt de GUI voor het programma, zodat de gebruiker makkelijk en
@@ -40,7 +39,7 @@ import static owe6eindopdracht.VirusLogica.hosts;
  *
  * Dit is tevens de hoofdclass, waaruit het programma gestart moet worden
  * @author Fini De Gruyter
- * @version 1.0
+ * @version 2.0
  * @since 29 jan 2018 11.09
  */
 public class VirusGUI extends JFrame implements ActionListener {
@@ -56,6 +55,9 @@ public class VirusGUI extends JFrame implements ActionListener {
     private JScrollPane scrollPaneVirus1, scrollPaneVirus2, scrollPaneOverlap;
     JRadioButton radioID, radioClass, radioHost;
     private JPanel radioPanel, activeerPanel;
+
+    ArrayList<Virus> virus1Lijst = new ArrayList<>();
+    ArrayList<Virus> virus2Lijst = new ArrayList<>();
 
     /**
      * @function de main functie. laat ook de GUI starten en zet de eerste
@@ -103,8 +105,8 @@ public class VirusGUI extends JFrame implements ActionListener {
         scrollPaneVirus2 = new JScrollPane(textAreaVirus2);
         scrollPaneOverlap = new JScrollPane(textAreaOverlap);
         radioID = new JRadioButton("ID");
-        radioClass = new JRadioButton("classificatie");
-        radioHost = new JRadioButton("aantal hosts");
+        radioClass = new JRadioButton("Soortnaam");
+        radioHost = new JRadioButton("Aantal hosts");
         radioID.addActionListener(this);
         radioClass.addActionListener(this);
         radioHost.addActionListener(this);
@@ -146,13 +148,13 @@ public class VirusGUI extends JFrame implements ActionListener {
         radioPanel.add(radioHost);
         radioPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Sortering"));
 
-        // zorgen dat overeenkomstbutton en radiobuttons onder elkaar komen te staan.
+        // zorgen dat activeerbutton en radiobuttons onder elkaar komen te staan.
         activeerPanel = new JPanel();
         activeerPanel.setLayout(new GridLayout(2, 1));
         activeerPanel.add(radioPanel);
         activeerPanel.add(buttonActiveer);
 
-// alles toevoegen in de juiste volgorde
+        // alles toevoegen in de juiste volgorde
         window.add(labelFile);
         window.add(textfieldBestand);
         window.add(buttonBrowse);
@@ -168,7 +170,6 @@ public class VirusGUI extends JFrame implements ActionListener {
         //window.add(radioPanel);
         //window.add(buttonActiveer);
         window.add(activeerPanel);
-
     }
 
     @Override
@@ -183,41 +184,163 @@ public class VirusGUI extends JFrame implements ActionListener {
             }
         }
         if (event.getSource() == buttonOpen) {
-            //HashMap hosts = VirusLogica.bestandLezen(textfieldBestand.getText());
             VirusLogica.bestandLezen(textfieldBestand.getText());
             comboBoxLinks.setModel(new DefaultComboBoxModel(VirusLogica.hosts.keySet().toArray()));
             comboBoxRechts.setModel(new DefaultComboBoxModel(VirusLogica.hosts.keySet().toArray()));
+            comboBoxMidden.setModel(new DefaultComboBoxModel(VirusLogica.classificatieLijst.toArray()));
             comboBoxLinks.setEnabled(true);
             comboBoxRechts.setEnabled(true);
-
+            comboBoxMidden.setEnabled(true);
         }
+
         if (event.getSource() == buttonActiveer) {
+
             String host1 = comboBoxLinks.getSelectedItem().toString();
             String host2 = comboBoxRechts.getSelectedItem().toString();
-            ArrayList<Virus> virus1Lijst = new ArrayList<>(VirusLogica.hosts.get(host1));
-            ArrayList<Virus> virus2Lijst = new ArrayList<>(VirusLogica.hosts.get(host2));
+            virus1Lijst = new ArrayList<>(VirusLogica.hosts.get(host1));
+            virus2Lijst = new ArrayList<>(VirusLogica.hosts.get(host2));
+            virus1Lijst.removeIf(virus -> !virus.getClassificatie().equals((String) comboBoxMidden.getSelectedItem()));
+            virus2Lijst.removeIf(virus -> !virus.getClassificatie().equals((String) comboBoxMidden.getSelectedItem()));
 
             textAreaVirus1.setText("");
+            ArrayList<Integer> dubbelChecker1 = new ArrayList<>();
             virus1Lijst.forEach((Virus virus) -> {
-                textAreaVirus1.append(virus.getVirusID() + "\n");
+                if (!dubbelChecker1.contains(virus.getVirusID())) {
+                    dubbelChecker1.add(virus.getVirusID());
+                    textAreaVirus1.append(virus.getVirusID() + "\n");
+                }
+
             });
             textAreaVirus2.setText("");
+            ArrayList<Integer> dubbelChecker2 = new ArrayList<>();
             virus2Lijst.forEach((Virus virus) -> {
-                textAreaVirus2.append(virus.getVirusID() + "\n");
+                if (!dubbelChecker2.contains(virus.getVirusID())) {
+                    dubbelChecker2.add(virus.getVirusID());
+                    textAreaVirus2.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaOverlap.setText("");
+            ArrayList<Integer> dubbelChecker3 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker3.contains(virus.getVirusID())) {
+                    dubbelChecker3.add(virus.getVirusID());
+                    textAreaOverlap.append(virus.getVirusID() + "\n");
+                }
+            });
+        }
+
+        if (event.getSource() == radioID) {
+            Virus.sorteer = 1;
+
+            Collections.sort(virus1Lijst);
+            Collections.sort(virus2Lijst);
+            HashSet overlap = new HashSet(virus1Lijst);
+            overlap.retainAll(virus2Lijst);
+            ArrayList<Virus> overlapList = new ArrayList(overlap);
+
+            textAreaVirus1.setText("");
+            ArrayList<Integer> dubbelChecker1 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker1.contains(virus.getVirusID())) {
+                    dubbelChecker1.add(virus.getVirusID());
+                    textAreaVirus1.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaVirus2.setText("");
+            ArrayList<Integer> dubbelChecker2 = new ArrayList<>();
+            virus2Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker2.contains(virus.getVirusID())) {
+                    dubbelChecker2.add(virus.getVirusID());
+                    textAreaVirus2.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaOverlap.setText("");
+            ArrayList<Integer> dubbelChecker3 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker3.contains(virus.getVirusID())) {
+                    dubbelChecker3.add(virus.getVirusID());
+                    textAreaOverlap.append(virus.getVirusID() + "\n");
+                }
+            });
+        }
+
+        if (event.getSource() == radioClass) {
+            Virus.sorteer = 2;
+
+            Collections.sort(virus1Lijst);
+            Collections.sort(virus2Lijst);
+            HashSet overlap = new HashSet(virus1Lijst);
+            overlap.retainAll(virus2Lijst);
+            ArrayList<Virus> overlapList = new ArrayList(overlap);
+
+            textAreaVirus1.setText("");
+            ArrayList<Integer> dubbelChecker1 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker1.contains(virus.getVirusID())) {
+                    dubbelChecker1.add(virus.getVirusID());
+                    textAreaVirus1.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaVirus2.setText("");
+            ArrayList<Integer> dubbelChecker2 = new ArrayList<>();
+            virus2Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker2.contains(virus.getVirusID())) {
+                    dubbelChecker2.add(virus.getVirusID());
+                    textAreaVirus2.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaOverlap.setText("");
+            ArrayList<Integer> dubbelChecker3 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker3.contains(virus.getVirusID())) {
+                    dubbelChecker3.add(virus.getVirusID());
+                    textAreaOverlap.append(virus.getVirusID() + "\n");
+                }
             });
 
         }
-        if (event.getSource() == radioID) {
-            Virus.sorteer = 1;
-            System.out.println("hallo");
-        }
-        if (event.getSource() == radioClass) {
-            Virus.sorteer = 2;
-            System.out.println("hallo");
-        }
+
         if (event.getSource() == radioHost) {
             Virus.sorteer = 3;
-            System.out.println("hallo");
+
+            Collections.sort(virus1Lijst);
+            Collections.sort(virus2Lijst);
+            HashSet overlap = new HashSet(virus1Lijst);
+            overlap.retainAll(virus2Lijst);
+            ArrayList<Virus> overlapList = new ArrayList(overlap);
+
+            textAreaVirus1.setText("");
+            ArrayList<Integer> dubbelChecker1 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker1.contains(virus.getVirusID())) {
+                    dubbelChecker1.add(virus.getVirusID());
+                    textAreaVirus1.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaVirus2.setText("");
+            ArrayList<Integer> dubbelChecker2 = new ArrayList<>();
+            virus2Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker2.contains(virus.getVirusID())) {
+                    dubbelChecker2.add(virus.getVirusID());
+                    textAreaVirus2.append(virus.getVirusID() + "\n");
+                }
+            });
+
+            textAreaOverlap.setText("");
+            ArrayList<Integer> dubbelChecker3 = new ArrayList<>();
+            virus1Lijst.forEach((Virus virus) -> {
+                if (!dubbelChecker3.contains(virus.getVirusID())) {
+                    dubbelChecker3.add(virus.getVirusID());
+                    textAreaOverlap.append(virus.getVirusID() + "\n");
+                }
+            });
+
         }
 
     }

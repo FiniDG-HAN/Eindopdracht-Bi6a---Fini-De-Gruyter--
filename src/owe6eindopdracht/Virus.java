@@ -33,10 +33,7 @@ public class Virus implements Comparable<Virus> {
         this.soort = species;
         this.classificatie = classification;
         this.hostList = new ArrayList<>();
-
     }
-
- 
 
     /**
      * @reference Jonathan Feenstra
@@ -67,7 +64,7 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param b 
+     * @param b
      */
     public void setSoort(String b) {
         soort = b;
@@ -83,7 +80,7 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param c 
+     * @param c
      */
     public void setClassificatie(String c) {
         classificatie = c;
@@ -120,14 +117,14 @@ public class Virus implements Comparable<Virus> {
     /**
      * @reference: Jonathan Feenstra, zie de compareTo methode
      * @function: zorgt dat de sorteer variable voor de compareTo methode in de
-     * class Virus is.
+     * class Virus is. hiermee kun je dus op meerdere verschillende manieren 
+     * sorteren
      */
     public static int sorteer;
 
     /**
      * @reference Jonathan Feenstra. heeft geholpen om ervoor te zorgen dat je
-     * op drie verschillende manieren kan sorteren en heeft geholpen bij de
-     * String sortering
+     * op drie verschillende manieren kan sorteren. 
      *
      * @param o Is het Virusobject die gegeven wordt aan de comparable methode
      * @function het kunnen sorteren van de virusobjecten op basis van de
@@ -145,7 +142,7 @@ public class Virus implements Comparable<Virus> {
             case 1:
                 return v.virusID - this.virusID;
             case 2:
-                return v.classificatie.compareTo(this.classificatie);
+                return v.soort.compareTo(this.soort);
             case 3:
                 return v.hostList.size() - this.hostList.size();
             default:

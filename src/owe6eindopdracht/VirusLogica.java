@@ -9,10 +9,8 @@ package owe6eindopdracht;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 
 /**
@@ -40,17 +38,21 @@ public class VirusLogica {
      */
     static HashMap<String, HashSet<Virus>> hosts = new HashMap<>();
     static HashSet<Virus> virusses = new HashSet();
-    
+    static HashSet<String> classificatieLijst = new HashSet<>();
+
+    /**
+     *
+     * @param Path
+     */
     public static void bestandLezen(String Path) {
         try {
             BufferedReader inFile;
             inFile = new BufferedReader(new FileReader(Path));
             String line;
             inFile.readLine();
-            
-            //HashSet<Virus> virusses = new HashSet();
-            while ((line = inFile.readLine()) != null) {
-                
+            int teller = 0;
+            while ((line = inFile.readLine()) != null && teller < 501) {
+                teller++;
                 String[] array = line.split("\t", -1); // -1 zorgt dat hij de lege tabs ook ziet
                 if (array[7] != null && !"".equals(array[7])) {
                     int virusID = Integer.parseInt(array[0]);
@@ -58,16 +60,15 @@ public class VirusLogica {
                     String lineage = array[2];
                     String[] lineageArray = lineage.split(";");
                     String classificatie = lineageArray[1];
-                    //getClassificatie(classificatie);
                     int hostID = Integer.parseInt(array[7]);
                     String hostIDcompleet = array[7] + " (" + array[8] + ")";
+                    classificatieLijst.add(classificatie);
 
                     // @reference Jonathan Feenstra
                     Virus dezeVirus = new Virus(virusID, soort, classificatie);
                     dezeVirus.addHost(hostID);
                     virusses.add(dezeVirus);
 
-                    
                     if (!hosts.containsKey(hostIDcompleet)) {
                         hosts.put(hostIDcompleet, (HashSet) virusses.clone());
                     } else {
@@ -76,27 +77,11 @@ public class VirusLogica {
                             virus.addHost(Integer.parseInt(array[7]));
                         }
                     }
-                    
-//                    if (hosts.containsKey(hostIDcompleet)) {
-//
-//                        hosts.get(hostIDcompleet).add(dezeVirus);
-//                        for (Virus virus : hosts.get(hostIDcompleet)) {
-//                            virus.addHost(Integer.parseInt(array[7]));
-//                        }
-//                    } else {
-//                        hosts.put(hostIDcompleet, (HashSet) virusses.clone());
-//                        System.out.println(virusses);
-//                    }
-//                    virusses.clear();
-                    //System.out.println(virusses);
-                    //System.out.println(hosts);
                     // @reference: einde code jonathan
                 }
-                
             }
             inFile.close();
-            //return virusses;
-            
+
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Bestand kan niet gelezen worden");
         } catch (ArrayIndexOutOfBoundsException a) {
@@ -104,15 +89,6 @@ public class VirusLogica {
         } catch (Exception e) {
             System.out.println("Onbekende fout: raadpleeg uw systeembeheerder");
         }
-        //return null;
     }
 
-    
-    
-
-        
-        
-        //ArrayList virusList1 = new ArrayList<>(hosts.get(VirusGUI.comboBoxLinks.getSelectedItem().toString()));
-        //ArrayList virusList2 = new ArrayList<>(hosts.get(VirusGUI.comboBoxRechts.getSelectedItem().toString()));
-        
-    }
+}
