@@ -87,7 +87,7 @@ public class VirusGUI extends JFrame implements ActionListener {
         window.setLayout(new FlowLayout());
 
         // alle elementen uit de GUI aanmaken en actionListeners toevoegen
-        labelFile = new JLabel("File of URL:");
+        labelFile = new JLabel("File:");
         labelClass = new JLabel("Viral classification");
         labelHost = new JLabel("Host ID");
         textfieldBestand = new JTextField();
