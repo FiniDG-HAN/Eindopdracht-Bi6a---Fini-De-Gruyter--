@@ -38,14 +38,17 @@ public class VirusLogica {
      * @param Path het bestandspad, zodat deze getoond wordt in de GUI
      * @return hosts en null
      */
-    public static HashSet bestandLezen(String Path) {
+    static HashMap<String, HashSet<Virus>> hosts = new HashMap<>();
+    static HashSet<Virus> virusses = new HashSet();
+    
+    public static void bestandLezen(String Path) {
         try {
             BufferedReader inFile;
             inFile = new BufferedReader(new FileReader(Path));
             String line;
             inFile.readLine();
-            HashMap<String, HashSet<Virus>> hosts = new HashMap<>();
-            HashSet<Virus> virusses = new HashSet();
+            
+            //HashSet<Virus> virusses = new HashSet();
             while ((line = inFile.readLine()) != null) {
                 
                 String[] array = line.split("\t", -1); // -1 zorgt dat hij de lege tabs ook ziet
@@ -59,27 +62,40 @@ public class VirusLogica {
                     int hostID = Integer.parseInt(array[7]);
                     String hostIDcompleet = array[7] + " (" + array[8] + ")";
 
-                    // @reference Jonathan Veenstra
+                    // @reference Jonathan Feenstra
                     Virus dezeVirus = new Virus(virusID, soort, classificatie);
                     dezeVirus.addHost(hostID);
                     virusses.add(dezeVirus);
 
-                    if (hosts.containsKey(hostIDcompleet)) {
-
+                    
+                    if (!hosts.containsKey(hostIDcompleet)) {
+                        hosts.put(hostIDcompleet, (HashSet) virusses.clone());
+                    } else {
                         hosts.get(hostIDcompleet).add(dezeVirus);
                         for (Virus virus : hosts.get(hostIDcompleet)) {
                             virus.addHost(Integer.parseInt(array[7]));
                         }
-                    } else {
-                        hosts.put(hostIDcompleet, (HashSet<Virus>) virusses.clone());
                     }
-                    virusses.clear();
+                    
+//                    if (hosts.containsKey(hostIDcompleet)) {
+//
+//                        hosts.get(hostIDcompleet).add(dezeVirus);
+//                        for (Virus virus : hosts.get(hostIDcompleet)) {
+//                            virus.addHost(Integer.parseInt(array[7]));
+//                        }
+//                    } else {
+//                        hosts.put(hostIDcompleet, (HashSet) virusses.clone());
+//                        System.out.println(virusses);
+//                    }
+//                    virusses.clear();
+                    //System.out.println(virusses);
+                    //System.out.println(hosts);
                     // @reference: einde code jonathan
                 }
                 
             }
             inFile.close();
-            return virusses;
+            //return virusses;
             
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Bestand kan niet gelezen worden");
@@ -88,17 +104,15 @@ public class VirusLogica {
         } catch (Exception e) {
             System.out.println("Onbekende fout: raadpleeg uw systeembeheerder");
         }
-        return null;
+        //return null;
     }
+
     
     
-    public static void probeersel() {
-        VirusGUI.comboBoxLinks.setModel(new DefaultComboBoxModel(hosts.keySet().toArray()));
-        VirusGUI.comboBoxRechts.setModel(new DefaultComboBoxModel(hosts.keySet().toArray()));
-        VirusGUI.comboBoxLinks.setEnabled(true);
-        VirusGUI.comboBoxRechts.setEnabled(true);
+
         
-        ArrayList virusList1 = new ArrayList<>(hosts.get(VirusGUI.comboBoxLinks.getSelectedItem().toString()));
-        ArrayList virusList2 = new ArrayList<>(hosts.get(VirusGUI.comboBoxRechts.getSelectedItem().toString()));
+        
+        //ArrayList virusList1 = new ArrayList<>(hosts.get(VirusGUI.comboBoxLinks.getSelectedItem().toString()));
+        //ArrayList virusList2 = new ArrayList<>(hosts.get(VirusGUI.comboBoxRechts.getSelectedItem().toString()));
         
     }

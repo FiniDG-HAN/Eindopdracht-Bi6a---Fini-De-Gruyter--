@@ -3,7 +3,6 @@
  */
 package owe6eindopdracht;
 
-
 /**
  * alle imports
  */
@@ -15,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import javax.swing.BorderFactory;
@@ -32,11 +32,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import static owe6eindopdracht.VirusLogica.hosts;
 
 /**
  * @function maakt de GUI voor het programma, zodat de gebruiker makkelijk en
  * met behulp van een interface de juiste informatie kan ophalen
- * 
+ *
  * Dit is tevens de hoofdclass, waaruit het programma gestart moet worden
  * @author Fini De Gruyter
  * @version 1.0
@@ -46,15 +47,15 @@ public class VirusGUI extends JFrame implements ActionListener {
 
     String fileLoc1, regel, header;
 
-    JTextField textfieldBestand;
-    private JButton buttonBrowse, buttonOpen, buttonOvereenkomst;
+    static JTextField textfieldBestand;
+    private JButton buttonBrowse, buttonOpen, buttonActiveer;
     private JLabel labelFile, labelClass, labelHost;
     private BufferedReader inFile;
-    private JComboBox comboBoxLinks, comboBoxRechts, comboBoxMidden;
+    static JComboBox comboBoxLinks, comboBoxRechts, comboBoxMidden;
     private JTextArea textAreaVirus1, textAreaVirus2, textAreaOverlap;
     private JScrollPane scrollPaneVirus1, scrollPaneVirus2, scrollPaneOverlap;
     JRadioButton radioID, radioClass, radioHost;
-    private JPanel radioPanel, overeenkomstPanel;
+    private JPanel radioPanel, activeerPanel;
 
     /**
      * @function de main functie. laat ook de GUI starten en zet de eerste
@@ -107,8 +108,8 @@ public class VirusGUI extends JFrame implements ActionListener {
         radioID.addActionListener(this);
         radioClass.addActionListener(this);
         radioHost.addActionListener(this);
-        //buttonOvereenkomst = new JButton("Overeenkomst");
-        //buttonOvereenkomst.addActionListener(this);
+        buttonActiveer = new JButton("Activeer");
+        buttonActiveer.addActionListener(this);
 
         // alle elementen de juiste grootte geven, zodat het er netjes uitziet
         // vanwege de flowlayout
@@ -144,14 +145,14 @@ public class VirusGUI extends JFrame implements ActionListener {
         radioPanel.add(radioClass);
         radioPanel.add(radioHost);
         radioPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Sortering"));
-        
-        // zorgen dat overeenkomstbutton en radiobuttons onder elkaar komen te staan.
-//        overeenkomstPanel = new JPanel();
-//        overeenkomstPanel.setLayout(new GridLayout(2, 1));
-//        overeenkomstPanel.add(radioPanel);
-//        overeenkomstPanel.add(buttonOvereenkomst);
 
-        // alles toevoegen in de juiste volgorde
+        // zorgen dat overeenkomstbutton en radiobuttons onder elkaar komen te staan.
+        activeerPanel = new JPanel();
+        activeerPanel.setLayout(new GridLayout(2, 1));
+        activeerPanel.add(radioPanel);
+        activeerPanel.add(buttonActiveer);
+
+// alles toevoegen in de juiste volgorde
         window.add(labelFile);
         window.add(textfieldBestand);
         window.add(buttonBrowse);
@@ -164,9 +165,9 @@ public class VirusGUI extends JFrame implements ActionListener {
         window.add(scrollPaneVirus1);
         window.add(scrollPaneVirus2);
         window.add(scrollPaneOverlap);
-        window.add(radioPanel);
-        //window.add(buttonOvereenkomst);
-        //window.add(overeenkomstPanel);
+        //window.add(radioPanel);
+        //window.add(buttonActiveer);
+        window.add(activeerPanel);
 
     }
 
@@ -183,16 +184,29 @@ public class VirusGUI extends JFrame implements ActionListener {
         }
         if (event.getSource() == buttonOpen) {
             //HashMap hosts = VirusLogica.bestandLezen(textfieldBestand.getText());
-            //comboBoxLinks.setModel(new DefaultComboBoxModel(hosts.keySet().toArray()));
-            //comboBoxRechts.setModel(new DefaultComboBoxModel(hosts.keySet().toArray()));
-            //String host1 = comboBoxLinks.getSelectedItem().toString();
-            //String host2 = comboBoxRechts.getSelectedItem().toString();
-            HashSet virusses = VirusLogica.bestandLezen(textfieldBestand.getText());
-            System.out.println(virusses);
-
+            VirusLogica.bestandLezen(textfieldBestand.getText());
+            comboBoxLinks.setModel(new DefaultComboBoxModel(VirusLogica.hosts.keySet().toArray()));
+            comboBoxRechts.setModel(new DefaultComboBoxModel(VirusLogica.hosts.keySet().toArray()));
+            comboBoxLinks.setEnabled(true);
+            comboBoxRechts.setEnabled(true);
 
         }
+        if (event.getSource() == buttonActiveer) {
+            String host1 = comboBoxLinks.getSelectedItem().toString();
+            String host2 = comboBoxRechts.getSelectedItem().toString();
+            ArrayList<Virus> virus1Lijst = new ArrayList<>(VirusLogica.hosts.get(host1));
+            ArrayList<Virus> virus2Lijst = new ArrayList<>(VirusLogica.hosts.get(host2));
 
+            textAreaVirus1.setText("");
+            virus1Lijst.forEach((Virus virus) -> {
+                textAreaVirus1.append(virus.getVirusID() + "\n");
+            });
+            textAreaVirus2.setText("");
+            virus2Lijst.forEach((Virus virus) -> {
+                textAreaVirus2.append(virus.getVirusID() + "\n");
+            });
+
+        }
         if (event.getSource() == radioID) {
             Virus.sorteer = 1;
             System.out.println("hallo");
