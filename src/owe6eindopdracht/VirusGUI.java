@@ -1,5 +1,35 @@
 /**
  * Created by Fini De Gruyter on 29-01-2018.
+ * 
+ * 
+ * Dit programma leest het bestand met virussen en de hosts die ze kunnen besmetten
+ * van ftp://ftp.genome.jp/pub/db/virushostdb/ . Dit bestand veranderd (dagelijks)
+ * van inhoud, omdat het publiek toegangelijk is.
+ * 
+ * Het laat de gebruiker kiezen tussen twee hosts en toont van elke host de virussen 
+ * (VirusID's) die deze host kunnen besmetten, op basis van een bepaalde categorie 
+ * van virussen (classificatie, zie http://www.genome.jp/virushostdb/ ). Vervolgens 
+ * wordt in het vak "overeenkomst" de overeenkomstige VirusID's getoond, oftewel
+ * de virusID's die beide hosts kunnen besmetten. Deze drie rijen van gegevens
+ * kunnen worden gesorteerd op basis van virusID nummer, soortnaam van het virus
+ * of het aantal hosts dat dit virusID kan besmetten. 
+ * 
+ * Werking van programma:
+ * 1. Klik op "browse" om het bestand van bovengenoemde website in te laden.
+ * Het bestandspad wordt vervolgens getoond in de balk.
+ * 2. Klik op "open" om het bestand in de laden en de drop-down menus te voorzien
+ * van de keuzemogelijkheden.
+ * 3. Klik de gewenste virussen aan bij classificatie, klik de gewenste hosts aan
+ * en Klik eventueel al op een bepaalde sortering (kan later ook).
+ * 4. Klik op "activeer" om de juiste informatie te laten tonen. Ook nu kan er
+ * door de klikken op de keuzemogelijkheden een sortering plaatsvinden.
+ * 5. Herhaal indien gewenst stap 3 en 4 om nieuwe informatie te tonen.
+ * 
+ * 
+ * @author Fini De Gruyter
+ * @version 2.0
+ * @since 29 jan 2018 11.09
+ * 
  */
 package owe6eindopdracht;
 

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @function Hier wordt de class Virus gemaakt, wat ervoor zorgt dat elk VirusID
  * in het bestand een apart object wordt met de relevante informatie erin
  * @author Fini De Gruyter
- * @version 1.0
+ * @version 2.0
  * @since 29 jan 2018 11.10
  */
 public class Virus implements Comparable<Virus> {
@@ -48,10 +48,10 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param a
+     * @param ID virusID
      */
-    public void setVirusID(int a) {
-        virusID = a;
+    public void setVirusID(int ID) {
+        virusID = ID;
     }
 
     /**
@@ -64,10 +64,10 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param b
+     * @param species soort
      */
-    public void setSoort(String b) {
-        soort = b;
+    public void setSoort(String species) {
+        soort = species;
     }
 
     /**
@@ -80,10 +80,10 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param c
+     * @param classification classificatie
      */
-    public void setClassificatie(String c) {
-        classificatie = c;
+    public void setClassificatie(String classification) {
+        classificatie = classification;
     }
 
     /**
@@ -96,13 +96,13 @@ public class Virus implements Comparable<Virus> {
 
     /**
      * @function: getters en setters van de virus class
-     * @param d
+     * @param hostLijst hostList
      */
-    public void setHost(ArrayList<Integer> d) {
+    public void setHost(ArrayList<Integer> hostLijst) {
         if (hostList == null) {
-            throw new NullPointerException("hostList mag niet leeg zijn");
+            throw new NullPointerException("HostList mag niet leeg zijn");
         } else {
-            hostList = d;
+            hostList = hostLijst;
         }
     }
 

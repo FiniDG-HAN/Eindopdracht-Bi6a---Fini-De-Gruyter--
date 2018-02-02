@@ -17,32 +17,27 @@ import javax.swing.JOptionPane;
  * @function Hier zit alle Logica van het programma. hier worden de juiste
  * berekeningen uitgevoerd en de gegevens opgehaald uit het bestand
  * @author Fini De Gruyter
- * @version 1.0
+ * @version 2.0
  * @since 29 jan 2018 11.12
  */
 public class VirusLogica {
 
-    /**
-     *
-     * @reference Jonathan Feenstra
-     * @function: bestand inlezen en de juiste waardes eruit halen om in de
-     * class Virus te kunnen zetten. Leest het bestand regel voor regel en split
-     * op tabs.
-     *
-     * Er was een lastig stuk waar ik niet uit kon komen (hoe zet je de meerdere
-     * Hosts in 1 Virus object, zonder steeds te moeten zoeken in het bestand
-     * naar de rest van alle mogelijke hosts met hetzelfde VirusID. Hierbij
-     * heeft Jonathan geholpen. Dit zorgt dat de Big O niet zo groot wordt (n^n)
-     * @param Path het bestandspad, zodat deze getoond wordt in de GUI
-     * @return hosts en null
-     */
     static HashMap<String, HashSet<Virus>> hosts = new HashMap<>();
     static HashSet<Virus> virusses = new HashSet();
     static HashSet<String> classificatieLijst = new HashSet<>();
 
     /**
+     * @function: bestand inlezen en de juiste waardes eruit halen om in de
+     * class Virus te kunnen zetten. Leest het bestand regel voor regel en split
+     * op tabs.
      *
-     * @param Path
+     * @reference Jonathan Feenstra, daar waar aangegeven.
+     * Er was een lastig stuk waar ik niet uit kon komen (hoe zet je de meerdere
+     * Hosts in 1 Virus object, zonder steeds te moeten zoeken (search()) in het 
+     * bestand naar de rest van alle mogelijke hosts met hetzelfde VirusID. Hierbij
+     * heeft Jonathan geholpen. Dit zorgt dat de Big O niet zo groot wordt 
+     * (n^n, bij search())
+     * @param Path het bestandspad
      */
     public static void bestandLezen(String Path) {
         try {
@@ -51,8 +46,8 @@ public class VirusLogica {
             String line;
             inFile.readLine();
             int teller = 0;
-            //while ((line = inFile.readLine()) != null) { /// gebruik deze als je het hele bestand wilt inladen
-            while ((line = inFile.readLine()) != null && teller < 501) { // gebruik deze als je wilt testen (eerste 500 entries)
+            while ((line = inFile.readLine()) != null) { /// gebruik deze als je het hele bestand wilt inladen
+            //while ((line = inFile.readLine()) != null && teller < 501) { // gebruik deze als je wilt testen (eerste 500 entries)
                 teller++;
                 String[] array = line.split("\t", -1); // -1 zorgt dat hij de lege tabs ook ziet
                 if (array[7] != null && !"".equals(array[7])) {
