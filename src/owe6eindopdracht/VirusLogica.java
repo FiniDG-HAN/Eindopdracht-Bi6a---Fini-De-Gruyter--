@@ -46,8 +46,8 @@ public class VirusLogica {
             String line;
             inFile.readLine();
             int teller = 0;
-            while ((line = inFile.readLine()) != null) { /// gebruik deze als je het hele bestand wilt inladen
-            //while ((line = inFile.readLine()) != null && teller < 501) { // gebruik deze als je wilt testen (eerste 500 entries)
+            //while ((line = inFile.readLine()) != null) { /// gebruik deze als je het hele bestand wilt inladen
+            while ((line = inFile.readLine()) != null && teller < 601) { // gebruik deze als je wilt testen (eerste 600 entries)
                 teller++;
                 String[] array = line.split("\t", -1); // -1 zorgt dat hij de lege tabs ook ziet
                 if (array[7] != null && !"".equals(array[7])) {
